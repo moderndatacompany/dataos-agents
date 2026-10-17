@@ -1,0 +1,180 @@
+{
+  "name": "@@agent_id@@",
+  "version": "v2alpha",
+  "type": "service",
+  "description": "Private Data Productization Agent trial with Codex, DataOS CLI and live Vulcan runtime",
+  "tags": [
+    "ai-showcases"
+  ],
+  "spec": {
+    "compute": "@@compute@@",
+    "runAsUser": "@@agent_id@@",
+    "stateful": false,
+    "replicas": 1,
+    "resources": {
+      "requests": {
+        "cpu": "250m",
+        "memory": "512Mi"
+      },
+      "limits": {
+        "cpu": "1",
+        "memory": "2Gi"
+      }
+    },
+    "http": {
+      "enabled": true,
+      "port": 8080,
+      "path": "/@@agent_id@@",
+      "stripPath": false,
+      "noNetworkAuthorization": false,
+      "ingress": {
+        "enabled": true,
+        "path": "/@@agent_id@@",
+        "stripPath": false
+      }
+    },
+    "envs": {
+      "HOME": "/etc/dataos/work/home",
+      "DATAOS_CONFIG_DIRECTORY": "/etc/dataos/work/cli-config",
+      "SHELL": "/bin/bash",
+      "GIT_ASKPASS": "/etc/dataos/work/git-askpass",
+      "GIT_TERMINAL_PROMPT": "0"
+    },
+    "use": {
+      "projection": {
+        "templateType": "liquid",
+        "secrets": [
+          {
+            "id": "@@tenant@@:@@model_secret@@",
+            "contextAlias": "model"
+          },
+          {
+            "id": "@@tenant@@:@@git_secret@@",
+            "contextAlias": "git"
+          }
+        ],
+        "projections": {
+          "files": [
+            {
+              "directory": "/run/showcase-model",
+              "name": "openai-api-key",
+              "template": "{{ secrets['model'].OPENAI_API_KEY | base64_decode }}"
+            },
+            {
+              "directory": "/run/showcase-git",
+              "name": "bitbucket-token",
+              "template": "{{ secrets['git'].GITSYNC_PASSWORD | base64_decode }}"
+            },
+            {
+              "directory": "/run/showcase-git",
+              "name": "username",
+              "template": "{{ secrets['git'].GITSYNC_USERNAME | base64_decode }}"
+            }
+          ],
+          "envVars": [
+            {
+              "key": "DATAOS_RUN_AS_APIKEY",
+              "template": "{{ defaultProjections.dataOsRunAsApikey }}"
+            },
+            {
+              "key": "DATAOS_RUN_AS_USER",
+              "template": "{{ defaultProjections.dataOsRunAsUser }}"
+            },
+            {
+              "key": "DATAOS_FQDN",
+              "template": "{{ defaultProjections.dataOsFqdn }}"
+            },
+            {
+              "key": "DATAOS_TENANT_ID",
+              "template": "{{ defaultProjections.dataOsTenantId }}"
+            },
+            {
+              "key": "VULCAN__HEIMDALL__ENABLED",
+              "template": "true"
+            },
+            {
+              "key": "VULCAN__HEIMDALL__BASE_URL",
+              "template": "{{ defaultProjections.heimdallUrl }}"
+            },
+            {
+              "key": "VULCAN__HEIMDALL__RUN_AS_TOKEN",
+              "template": "{{ defaultProjections.dataOsRunAsApikey }}"
+            },
+            {
+              "key": "VULCAN__HERA__ENABLED",
+              "template": "true"
+            },
+            {
+              "key": "VULCAN__HERA__URL",
+              "template": "https://{{ defaultProjections.dataOsFqdn }}/hera/api"
+            },
+            {
+              "key": "VULCAN__HERA__TOKEN",
+              "template": "{{ defaultProjections.dataOsRunAsApikey }}"
+            },
+            {
+              "key": "DEPOT_SERVICE_URL",
+              "template": "{{ defaultProjections.depotServiceUrl }}"
+            }
+          ],
+          "filesTemplate": "{%- for projection in projectionDepots %}\n{%- assign depot_details = depots[projection.name] %}\n\n{%- assign last_purpose = projection.secretPurposes.last %}\n\n{%- assign secret_name = projection.name %}\n{%- assign secret_name = secret_name | append: \":\" %}\n{%- assign secret_name = secret_name | append: last_purpose %}\n{%- assign secrets = depotsPurposesSecrets[secret_name] -%}        \n\n{%- comment %} Postgres stack: Only handle PostgreSQL depots {% endcomment %}\n{%- comment %} Handle JDBC depots - map subprotocol to actual type {% endcomment %}\n{%- if depot_details.type == \"jdbc\" %}\n{%- assign actual_type = depot_details.spec.subprotocol %}\n{%- else %}\n{%- assign actual_type = depot_details.type %}\n{%- endif %}\n\n{%- if actual_type == \"postgresql\" %}\n- name: {{ projection.name }}_config.yaml\n  contents: |\n    connection:\n      type: postgres\n      host: {{ depot_details.spec.host }}\n      port: {{ depot_details.spec.port | default: 5432 }}\n      user: {{ secrets.username | strip | replace: '\\n', '' | base64_decode }}\n      password: {{ secrets.password | strip | replace: '\\n', '' | base64_decode }}\n      database: {{ depot_details.spec.database }}\n      {%- if depot_details.spec.keepalives_idle %}\n      keepalives_idle: {{ depot_details.spec.keepalives_idle }}\n      {%- endif %}\n      {%- if depot_details.spec.connect_timeout %}\n      connect_timeout: {{ depot_details.spec.connect_timeout }}\n      {%- endif %}\n      {%- if depot_details.spec.sslmode %}\n      sslmode: {{ depot_details.spec.sslmode }}\n      {%- endif %}\n      {%- if depot_details.spec.application_name %}\n      application_name: {{ depot_details.spec.application_name }}\n      {%- endif %}\n      {%- if depot_details.spec.role %}\n      role: {{ depot_details.spec.role }}\n      {%- endif %}\n{%- endif %}\n{%- endfor %}\n"
+        },
+        "depots": [
+          {
+            "name": "@@depot@@",
+            "includeSecrets": true,
+            "secretPurposes": [
+              "rw"
+            ]
+          }
+        ]
+      }
+    },
+    "stack": "container:1.0",
+    "stackSpec": {
+      "image": "@@main_image@@",
+      "command": [
+        "/bin/bash",
+        "-c"
+      ],
+      "arguments": [
+        "set +x\nset -euo pipefail\numask 077\nexport HOME=/etc/dataos/work/home\nexport DATAOS_CONFIG_DIRECTORY=/etc/dataos/work/cli-config\nexport PATH=/etc/dataos/work/bin:$PATH\nexport SHELL=/bin/bash\nexport GIT_ASKPASS=/etc/dataos/work/git-askpass\nexport GIT_TERMINAL_PROMPT=0\nmkdir -p \"$HOME\" /etc/dataos/work/runtime /etc/dataos/work/project\nprintf '%s' '@@FILE:start-agent.sh@@' | base64 -d > /etc/dataos/work/start-codex.sh\nchmod 700 /etc/dataos/work/start-codex.sh\nnpm install --prefix /etc/dataos/work/runtime --ignore-scripts --no-audit --no-fund @@codex_package@@\nln -sfn /etc/dataos/work/runtime/node_modules/.bin/codex /etc/dataos/work/bin/codex\ncodex --version\nprintf '%s' '@@FILE:vulcan-broker.py@@' | base64 -d > /etc/dataos/work/vulcan-broker.py\nprintf '%s' '@@FILE:vulcan.js@@' | base64 -d > /etc/dataos/work/bin/vulcan\nchmod 700 /etc/dataos/work/bin/vulcan\n\n@@RUNTIME_FILES@@\nexport VULCAN_DOCS=/etc/dataos/work/agent/docs\nexport AGENT_TOOLS=/etc/dataos/work/agent/tools.md\ndataos-ctl develop assist lab --help > /etc/dataos/work/agent/cli-lab-help.txt 2>&1\nif ! grep -q -- '--subpath' /etc/dataos/work/agent/cli-lab-help.txt; then\n  printf '%s\\n' 'CONFIG: selected DataOS CLI image lacks the lab transport capability.' >&2\n  exit 1\nfi\ndataos-ctl develop assist mcp run --help > /etc/dataos/work/agent/cli-mcp-help.txt 2>&1\ncodex --help > /etc/dataos/work/agent/model-help.txt 2>&1\n# One shared product collection, provisioned by the operator.\nif [ ! -d /etc/dataos/work/project/.git ]; then\n  git clone --single-branch --branch \"$(cat /etc/dataos/work/git-branch)\" \"$(cat /etc/dataos/work/git-url)\" /etc/dataos/work/project\nfi\n\nprintf '%s' '@@FILE:git-askpass.sh@@' | base64 -d > /etc/dataos/work/git-askpass\nchmod 700 /etc/dataos/work/git-askpass\nexec dataos-ctl develop assist lab --host 0.0.0.0 --port 8080 --subpath /@@agent_id@@ --dir /etc/dataos/work/project --agent codex --cmd /etc/dataos/work/start-codex.sh --allowed-users @@operator_id@@\n"
+      ],
+      "initSideCars": [
+        {
+          "image": "@@cli_image@@",
+          "command": [
+            "/bin/sh",
+            "-c"
+          ],
+          "arguments": [
+            "set -eu; mkdir -p /etc/dataos/work/bin /etc/dataos/work/cli-config; cp /opt/dataos/dataos-ctl /etc/dataos/work/bin/dataos-ctl; cp -R /etc/dataos/cfg/. /etc/dataos/work/cli-config/; chmod 755 /etc/dataos/work/bin/dataos-ctl"
+          ]
+        }
+      ],
+      "sideCars": [
+        {
+          "image": "@@vulcan_image@@",
+          "command": [
+            "/opt/venv/bin/python",
+            "-c"
+          ],
+          "arguments": [
+            "import os,time,runpy; p='/etc/dataos/work/vulcan-broker.py';\nwhile not os.path.exists(p): time.sleep(0.2)\nrunpy.run_path(p,run_name='__main__')"
+          ],
+          "envs": {
+            "SHOWCASE_RUNTIME": "vulcan",
+            "DATAOS_CONFIG_DIR": "/etc/dataos/config",
+            "DATAOS_WORK_DIR": "/etc/dataos/work"
+          }
+        }
+      ]
+    },
+    "servicePorts": [
+      {
+        "name": "http",
+        "port": 8080
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "main_image": "docker.io/library/node:22-bookworm@sha256:c4d5523090a817b7aa86d2111241fdd4f66d1e27782b44160e6aa63b357ecb2d",
+  "cli_image": "tmdcio/dataos-ctl:3.24.6@sha256:92a056e5bd98963f3251598840cefba02df40bb79e2003e3465939dcf5d35bc6",
+  "vulcan_image": "tmdcio/vulcan-postgres:0.228.1.30.dev009",
+  "codex_package": "@openai/codex@0.163.0"
+}

@@ -1,0 +1,680 @@
+[
+  {
+    "name": "agent-@@agent_id@@-git-secret-use",
+    "collection": "system",
+    "description": "Agent package access: git-secret-use",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:type:secret:@@tenant@@:@@git_secret@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-catalog-discovery",
+    "collection": "system",
+    "description": "Agent package access: catalog-discovery",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get"
+    ],
+    "objects": {
+      "paths": [
+        "/argus/api/v1/tenants/@@tenant@@/search/data-products"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-auth-check-http",
+    "collection": "system",
+    "description": "Agent package access: complete-auth-check-http",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "post"
+    ],
+    "objects": {
+      "paths": [
+        "/heimdall/api/v1/authorize",
+        "/heimdall/api/v1/authorize/aggregate"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-metadata",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: complete-metadata",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:type:resource",
+          "dataos:type:tenant-resource"
+        ],
+        [
+          "dataos:resource:depot"
+        ],
+        [
+          "dataos:resource:depot:v2alpha:@@depot@@"
+        ],
+        [
+          "dataos:resource:stack"
+        ],
+        [
+          "dataos:resource:stack:v2alpha:vulcan-postgres"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-owned-names",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: complete-owned-names",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read",
+      "update",
+      "delete"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:resource:vulcan:v1alpha:@@resource_prefix@@*"
+        ],
+        [
+          "dataos:resource:vulcan:v2alpha:@@resource_prefix@@*"
+        ],
+        [
+          "dataos:resource:workflow:v1alpha:@@resource_prefix@@*"
+        ],
+        [
+          "dataos:resource:workflow:v2alpha:@@resource_prefix@@*"
+        ],
+        [
+          "dataos:resource:service:v1alpha:@@resource_prefix@@*"
+        ],
+        [
+          "dataos:resource:service:v2alpha:@@resource_prefix@@*"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-product-query",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: complete-product-query",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:dataproduct:@@tenant@@-@@resource_prefix@@*"
+        ],
+        [
+          "dataos:dataproduct:@@resource_prefix@@*"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-query-http",
+    "collection": "system",
+    "description": "Agent package access: complete-query-http",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get",
+      "post"
+    ],
+    "objects": {
+      "paths": [
+        "/vulcan/tenants/@@tenant@@/data-products/@@tenant@@-@@resource_prefix@@*/**",
+        "/vulcan/tenants/@@tenant@@/data-products/@@resource_prefix@@*/**"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-read-http",
+    "collection": "system",
+    "description": "Agent package access: complete-read-http",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get"
+    ],
+    "objects": {
+      "paths": [
+        "/poros/api/v2/tenants/@@tenant@@/stacks/**",
+        "/ds/api/v2/types/**",
+        "/ds/api/v2/tenants/@@tenant@@/depots/@@depot@@",
+        "/ds/api/v2/tenants/@@tenant@@/depots/@@depot@@/**",
+        "/ds/api/v3/tenants/@@tenant@@/depots/@@depot@@",
+        "/ds/api/v3/tenants/@@tenant@@/depots/@@depot@@/**"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-resource-http",
+    "collection": "system",
+    "description": "Agent package access: complete-resource-http",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get",
+      "post",
+      "put",
+      "delete"
+    ],
+    "objects": {
+      "paths": [
+        "/poros/api/v2/tenants/@@tenant@@/resources",
+        "/poros/api/v2/tenants/@@tenant@@/resources/**"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-tenant",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: complete-tenant",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read_in",
+      "create_in",
+      "update_in",
+      "delete_in"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:tenant:@@tenant@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-complete-types",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: complete-types",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read",
+      "create",
+      "update",
+      "delete",
+      "read_log"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:resource:vulcan"
+        ],
+        [
+          "dataos:resource:workflow"
+        ],
+        [
+          "dataos:resource:service"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-source-depot-@@tenant@@",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: source-depot-@@tenant@@",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:system:ds:@@depot@@"
+        ],
+        [
+          "dataos:system:ds:@@depot@@:rw"
+        ],
+        [
+          "dataos:system:ds:@@depot@@:full"
+        ],
+        [
+          "dataos:system:depot-typedef"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-source-depot-resolve",
+    "collection": "system",
+    "description": "Agent package access: source-depot-resolve",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "post"
+    ],
+    "objects": {
+      "paths": [
+        "/ds/api/v2/tenants/@@tenant@@/resolve"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-source-git-secret-http",
+    "collection": "system",
+    "description": "Agent package access: source-git-secret-http",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get"
+    ],
+    "objects": {
+      "paths": [
+        "/heimdall/api/v1/secrets/@@tenant@@:@@git_secret@@",
+        "/heimdall/api/v1/secrets/@@tenant@@:@@source_secret@@"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-source-git-secret-metadata",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: source-git-secret-metadata",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:resource:secret"
+        ],
+        [
+          "dataos:resource:secret:v2alpha:@@source_secret@@"
+        ],
+        [
+          "dataos:resource:secret:v2alpha:@@git_secret@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-source-source-secret-read",
+    "collection": "system",
+    "description": "Agent package access: source-source-secret-read",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:type:secret:@@tenant@@:@@source_secret@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-vulcan-object-store-metadata",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: vulcan-object-store-metadata",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:resource:secret"
+        ],
+        [
+          "dataos:resource:secret:v2alpha:vulcan-object-store-connection"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-vulcan-object-store-route",
+    "collection": "system",
+    "description": "Agent package access: vulcan-object-store-route",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get"
+    ],
+    "objects": {
+      "paths": [
+        "/heimdall/api/v1/secrets/@@tenant@@:vulcan-object-store-connection"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-vulcan-object-store-use",
+    "collection": "system",
+    "description": "Agent package access: vulcan-object-store-use",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:type:secret:@@tenant@@:vulcan-object-store-connection"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-vulcan-state-metadata",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: vulcan-state-metadata",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:resource:secret"
+        ],
+        [
+          "dataos:resource:secret:v2alpha:vulcan-state-connection"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-vulcan-state-route",
+    "collection": "system",
+    "description": "Agent package access: vulcan-state-route",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get"
+    ],
+    "objects": {
+      "paths": [
+        "/heimdall/api/v1/secrets/@@tenant@@:vulcan-state-connection"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-vulcan-state-use",
+    "collection": "system",
+    "description": "Agent package access: vulcan-state-use",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:type:secret:@@tenant@@:vulcan-state-connection"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-compute-read-use",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: compute-read-use",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read",
+      "use"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:resource:compute"
+        ],
+        [
+          "dataos:resource:compute:v2alpha:@@compute@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-exact-model-resource-read",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: exact-model-resource-read",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:resource:secret"
+        ],
+        [
+          "dataos:resource:secret:v2alpha:@@model_secret@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-model-secret-read",
+    "collection": "system",
+    "description": "Agent package access: model-secret-read",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "read"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "dataos:type:secret:@@tenant@@:@@model_secret@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-schema-get",
+    "collection": "system",
+    "description": "Agent package access: schema-get",
+    "subjects": {
+      "tags": [
+        "users:id:@@agent_id@@"
+      ]
+    },
+    "predicates": [
+      "get"
+    ],
+    "objects": {
+      "paths": [
+        "/poros/api/v2/schemas/types",
+        "/poros/api/v2/schemas/json/**",
+        "/heimdall/api/v1/users/@@agent_id@@",
+        "/heimdall/api/v1/secrets/@@tenant@@:@@model_secret@@"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-operator-run-as",
+    "collection": "@@tenant@@",
+    "description": "Agent package access: operator-run-as",
+    "subjects": {
+      "tags": [
+        "users:id:@@operator_id@@"
+      ]
+    },
+    "predicates": [
+      "run_as"
+    ],
+    "objects": {
+      "tags": [
+        [
+          "users:id:@@agent_id@@"
+        ]
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-operator-schema-get",
+    "collection": "system",
+    "description": "Agent package access: operator-schema-get",
+    "subjects": {
+      "tags": [
+        "users:id:@@operator_id@@"
+      ]
+    },
+    "predicates": [
+      "get"
+    ],
+    "objects": {
+      "paths": [
+        "/poros/api/v2/schemas/types",
+        "/poros/api/v2/schemas/json/**"
+      ]
+    },
+    "allow": true
+  },
+  {
+    "name": "agent-@@agent_id@@-operator-ingress",
+    "collection": "system",
+    "description": "Allow the configured operator to invoke this agent Service only",
+    "subjects": {
+      "tags": [
+        "users:id:@@operator_id@@"
+      ]
+    },
+    "predicates": [
+      "get",
+      "post"
+    ],
+    "objects": {
+      "paths": [
+        "/@@agent_id@@",
+        "/@@agent_id@@/**"
+      ]
+    },
+    "allow": true
+  }
+]

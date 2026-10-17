@@ -1,0 +1,16 @@
+{
+  "host": "example.instance.dataos.cloud",
+  "tenant": "demo",
+  "agent_id": "productagent",
+  "operator_id": "operator",
+  "compute": "agentcompute",
+  "depot": "salesdepot",
+  "source_secret": "salescredentials",
+  "model_secret": "agentmodel",
+  "git_secret": "agentgit",
+  "resource_prefix": "agentdp",
+  "git_repository": "https://github.com/your-company/data-products",
+  "git_branch": "main",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "medium"
+}
