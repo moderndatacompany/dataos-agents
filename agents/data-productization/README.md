@@ -2,6 +2,8 @@
 
 Operator files live in `deploy/`; only `runtime/` enters the running agent. The admin supplies Git repository/credentials, model API key, compute, Depots and access during setup. Actual users only discuss requirements and send the agent off to build.
 
+**App user:** you may supply an existing application identity or let the installer create it. See [identity and permission requirements](deploy/ACCESS.md) for admin prerequisites, runtime access and remaining handoffs.
+
 Copy `environment.example.json`, select your environment connections and Git destination, then run:
 
 ```bash
